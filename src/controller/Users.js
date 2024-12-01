@@ -1,17 +1,22 @@
 import { response } from "../middleware/response.js";
+import userModel from "../model/user.js";
 
 const UsersController = {
-    getUsers: (req, res) => {
+    getUsers: async (req, res) => {
         try {
+            const data = await userModel.getUser();
+            console.log(data)
             response(
-                res, 
+                res,
                 {
                     status: true,
                     code: 200,
                     message: "get users success",
+                    data
                 }
             )
         } catch (error) {
+            console.log(error)
             response(
                 res,
                 {
@@ -23,14 +28,54 @@ const UsersController = {
             )
         }
     },
-    createUsers: (req, res) => {
+    createUsers: async (req, res) => {
         try {
-            console.log(req.body)
             const data = req.body
-            return response(res, 200, true, "create users success",data = data)
+            await userModel.createUsers(data)
+            return response(res, {
+                status: true,
+                code: 200,
+                message: "create users success"
+            })
         } catch (error) {
-            console.log(error)
-            return response(res, 400, false, "create users failed")
+            return response(res, {
+                status: false,
+                code: 400,
+                message: "create users failed",
+                error
+            })
+        }
+    },
+    loginUsers: async (req, res) => {
+        try {
+            const userData = await userModel.findUsers(req.body)
+            if (userData.length === 0) {
+                return response(res, {
+                    status: false,
+                    code: 400,
+                    message: "user not found"
+                })
+            }
+            if (userData[0].password !== req.body.password) {
+                return response(res, {
+                    status: false,
+                    code: 400,
+                    message: "wrong password"
+                })
+            }
+            return response(res, {
+                status: true,
+                code: 200,
+                message: "login users success",
+                data: userData[0]
+            })
+        } catch (error) {
+            return response(res, {
+                status: false,
+                code: 400,
+                message: "login users failed",
+                error
+            })
         }
     }
 }
