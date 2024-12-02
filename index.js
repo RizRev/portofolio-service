@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import mainRouter from "./src/routers/index.js";
 import { response } from "./src/middleware/response.js";
 // import pool from "./src/database/connection/pg.js";
-// import AppDataSource from "./src/database/connection/index.js";
+import {AppDataSource, pgInit} from "./src/database/connection/typeOrm.js";
 import { DataSource } from "typeorm";
 import pkg from "pg";
 const { Client, Pool } = pkg;
@@ -61,6 +61,8 @@ pool.connect()
         console.error("Connection failed:", err.message);
         // pool.end();
     });
+
+pgInit();
 
 // AppDataSource.initialize()
 //     .then(() => {
