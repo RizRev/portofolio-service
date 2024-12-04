@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
-    res.send("Service is running");
+    res.send("Service is running properly");
 });
 
 app.use("/", mainRouter);
