@@ -31,6 +31,14 @@ const UsersController = {
     createUsers: async (req, res) => {
         try {
             const data = req.body
+            const dataCheck = await userModel.findUsers(data)
+            if (dataCheck.length > 0) {
+                return response(res, {
+                    status: false,
+                    code: 400,
+                    message: "email already exists"
+                })
+            }
             await userModel.createUsers(data)
             return response(res, {
                 status: true,
